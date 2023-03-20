@@ -1,19 +1,17 @@
+let playerScore = 0;
+let computerScore = 0;
+
+const btns = document.querySelectorAll('button')
+const result = document.querySelector('div.result')
+const player = document.querySelector('div.player')
+const computer = document.querySelector('div.computer')
+btns.forEach(btn => btn.addEventListener('click', e => playRound(e.target.textContent, getComputerChoice())))
+
 function getComputerChoice(){
   const option = ['rock','paper','scissors'];
   const randomIndex = Math.floor(Math.random() * 3)
   
   return option[randomIndex]
-}
-
-function getPlayerChoice(){
-  const choice = prompt('Rock paper scissors?', "").toLowerCase();
-  
-  if (choice !== 'rock' && choice !== 'paper' && choice !== 'scissors') {
-    alert('Invalid input');
-    return getPlayerChoice()
-  }
-
-  return choice;
 }
 
 function isPlayerWin(playerSelection, computerSeclection){
@@ -26,42 +24,24 @@ function isPlayerWin(playerSelection, computerSeclection){
 }
 
 function playRound(playerSelection, computerSeclection){
-  console.log(playerSelection, computerSeclection);
-
-  if (playerSelection === computerSeclection) return "Tie"
-
-  if (isPlayerWin(playerSelection, computerSeclection)) return "You Win"
-
-  return "You Lose"
-}
-
-function game(){
-  let user = 0;
-  let computer = 0;
-
-  for(let i = 1; i <= 5; i++){
-    const roundResult = playRound(getPlayerChoice(),getComputerChoice())
-    console.log(roundResult)
-
-    switch (roundResult){
-      case "Tie":
-        i--;
-        break;
-      case "You Lose": 
-       computer++;
-        break;
-      case "You Win":
-        user++
-    }
-    
-    if (i < 5){
-      console.log(`Current reuslt, User: ${user} Computer: ${computer}`)
-    }
+  if (playerSelection === computerSeclection) {
+    result.textContent = "Tie"
+  } else if (isPlayerWin(playerSelection, computerSeclection)){
+    result.textContent = `You win! You picked ${playerSelection} while computer picked ${computerSeclection}`
+    player.textContent = `Player: ${++playerScore}`
+  } else {
+    result.textContent = `You lose! You picked ${playerSelection} while computer picked ${computerSeclection}`
+    computer.textContent = `Computer: ${++computerScore}`
   }
-
-  console.log(`Final reuslt, User: ${user} Computer: ${computer}`)
-  console.log(`You ${user > computer ? 'Win' : 'Lose'}`)
-
+  checkGameFinish()
 }
 
-game();
+function checkGameFinish(){
+  if (computerScore === 5){
+    alert('Game set match! Computer win!')
+    btns.forEach(btn => btn.setAttribute('disabled', ''))
+  } else if (playerScore === 5){
+    alert('Game set match! Player win!')
+    btns.forEach(btn => btn.setAttribute('disabled', ''))
+  }
+}
